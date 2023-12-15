@@ -16,6 +16,33 @@ $(document).ready(function () {
         }
     };
 
+    const findIcon = function (code) {
+        const baseURL = 'https://openweathermap.org/img/wn/';
+        if (code >= 200 && code < 300) {
+            return `${baseURL}11d.png`;
+        } else if (code >= 300 && code < 400) {
+            return `${baseURL}09d.png`;
+        } else if (code >= 500 && code < 511) {
+            return `${baseURL}10d.png`;
+        } else if (code === 511) {
+            return `${baseURL}13d.png`;
+        } else if (code >= 520 && code < 600) {
+            return `${baseURL}09d.png`;
+        } else if (code >= 600 && code < 700) {
+            return `${baseURL}13d.png`;
+        } else if (code >= 701 && code < 800) {
+            return `${baseURL}50d.png`;
+        } else if (code === 800) {
+            return `${baseURL}01d.png`;
+        } else if (code === 801) {
+            return `${baseURL}02d.png`;
+        } else if (code === 802) {
+            return `${baseURL}03d.png`;
+        } else if (code >= 803) {
+            return `${baseURL}04d.png`;
+        }
+    };
+
     const currentWeather = function () {
         const queryURL = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=0160e5812911c2bb6f25d93dcc531df6&units=metric&units=metric`;
 
@@ -29,7 +56,9 @@ $(document).ready(function () {
             })
             .then(function (data) {
                 const city = data.name;
-
+                const weatherCode = data.weather[0].id;
+                console.log(data);
+                console.log(weatherCode);
                 const date = dayjs().format('DD/MM/YYYY');
                 const temperature = data.main.temp;
                 const wind = data.wind.speed;
@@ -40,13 +69,17 @@ $(document).ready(function () {
 
                 const dateEl = $('<h2>');
                 dateEl.text(`${city} (${date})`);
+                const iconEl = $('<span>');
+                const iconImg = $('<img>');
+                iconImg.attr('src', findIcon(weatherCode));
                 const tempEl = $('<p>');
                 tempEl.text(`Temp: ${temperature}`);
                 const windEl = $('<p>');
                 windEl.text(`Wind: ${wind}`);
                 const humidityEl = $('<p>');
                 humidityEl.text(`Humidity: ${humidity}`);
-                todayEl.append(dateEl, tempEl, windEl, humidityEl);
+                todayEl.append(dateEl, iconEl, tempEl, windEl, humidityEl);
+                dateEl.append(iconImg);
             })
             .catch(function (error) {
                 alert('City not found or there was an API request error');
@@ -66,7 +99,6 @@ $(document).ready(function () {
             })
             .then(function (data) {
                 const city = data.city.name;
-
                 // grabbing weather data for the same time for 5 days
                 const desiredTime = '12:00:00';
                 const fiveDayForecast = data.list.filter(function (weatherInfo) {
@@ -83,12 +115,17 @@ $(document).ready(function () {
                     const temperature = day.main.temp;
                     const wind = day.wind.speed;
                     const humidity = day.main.humidity;
+                    const weatherCode = day.weather[0].id;
 
+                    console.log(day);
                     const dayEl = $('<div>');
                     dayEl.addClass('future-day');
 
                     const dateEl = $('<p>');
                     dateEl.text(`${city} (${date})`);
+
+                    const iconEl = $('<img>');
+                    iconEl.attr('src', findIcon(weatherCode));
 
                     const tempEl = $('<p>');
                     tempEl.text(`Temp: ${temperature}`);
@@ -99,7 +136,7 @@ $(document).ready(function () {
                     const humidityEl = $('<p>');
                     humidityEl.text(`Humidity: ${humidity}`);
 
-                    dayEl.append(dateEl, tempEl, windEl, humidityEl);
+                    dayEl.append(dateEl, iconEl, tempEl, windEl, humidityEl);
                     forecastEl.append(dayEl);
                 });
             })
