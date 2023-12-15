@@ -57,29 +57,34 @@ $(document).ready(function () {
             .then(function (data) {
                 const city = data.name;
                 const weatherCode = data.weather[0].id;
-                console.log(data);
-                console.log(weatherCode);
                 const date = dayjs().format('DD/MM/YYYY');
-                const temperature = data.main.temp;
-                const wind = data.wind.speed;
+                const temperature = parseInt(data.main.temp);
+                const wind = parseInt(data.wind.speed);
                 const humidity = data.main.humidity;
 
                 const todayEl = $('#today');
                 todayEl.empty();
+                todayEl.css('background-color', '#3a7bc8');
+                todayEl.css('border', '1px solid black');
 
                 const dateEl = $('<h2>');
                 dateEl.text(`${city} (${date})`);
+
                 const iconEl = $('<span>');
                 const iconImg = $('<img>');
                 iconImg.attr('src', findIcon(weatherCode));
+
                 const tempEl = $('<p>');
-                tempEl.text(`Temp: ${temperature}`);
+                tempEl.text(`Temp: ${temperature}°C`);
+
                 const windEl = $('<p>');
-                windEl.text(`Wind: ${wind}`);
+                windEl.text(`Wind: ${wind} KPH`);
+
                 const humidityEl = $('<p>');
-                humidityEl.text(`Humidity: ${humidity}`);
-                todayEl.append(dateEl, iconEl, tempEl, windEl, humidityEl);
+                humidityEl.text(`Humidity: ${humidity}%`);
                 dateEl.append(iconImg);
+                todayEl.append(dateEl, iconEl, tempEl, windEl, humidityEl);
+                console.log(dateEl);
             })
             .catch(function (error) {
                 alert('City not found or there was an API request error');
@@ -110,14 +115,17 @@ $(document).ready(function () {
                 //rendering to DOM
                 const forecastEl = $('.forecast-container');
                 forecastEl.empty();
+                const headingEl = $('<h4>');
+                $('#forecast h4:first-child').remove();
+                headingEl.text('5-Day Forecast');
+                $('#forecast').prepend(headingEl);
                 fiveDayForecast.forEach(function (day) {
                     const date = dayjs(day.dt_txt.split(` `)[0], 'YYYY/MM/DD').format('DD/MM/YYYY');
-                    const temperature = day.main.temp;
-                    const wind = day.wind.speed;
+                    const temperature = parseInt(day.main.temp);
+                    const wind = parseInt(day.wind.speed);
                     const humidity = day.main.humidity;
                     const weatherCode = day.weather[0].id;
 
-                    console.log(day);
                     const dayEl = $('<div>');
                     dayEl.addClass('future-day');
 
@@ -128,13 +136,13 @@ $(document).ready(function () {
                     iconEl.attr('src', findIcon(weatherCode));
 
                     const tempEl = $('<p>');
-                    tempEl.text(`Temp: ${temperature}`);
+                    tempEl.text(`Temp: ${temperature}°C`);
 
                     const windEl = $('<p>');
-                    windEl.text(`Wind: ${wind}`);
+                    windEl.text(`Wind: ${wind} KPH`);
 
                     const humidityEl = $('<p>');
-                    humidityEl.text(`Humidity: ${humidity}`);
+                    humidityEl.text(`Humidity: ${humidity}%`);
 
                     dayEl.append(dateEl, iconEl, tempEl, windEl, humidityEl);
                     forecastEl.append(dayEl);
@@ -149,29 +157,28 @@ $(document).ready(function () {
         $('#history').on('click', '.history-btn', function (e) {
             cityName = cityName.charAt(0).toUpperCase() + cityName.slice(1);
             const button = $(e.target);
-            console.log(button);
             cityName = button.text();
-            console.log(cityName);
             currentWeather();
             fiveDayForecast();
         });
     };
-
+    // Generate buttons as search history
     const renderHistBtn = function () {
         let cityName = searchInputEl.val();
         cityName = cityName.charAt(0).toUpperCase() + cityName.slice(1);
         const newBtn = $('<button>');
 
         if (!savedCities.includes(cityName)) {
+            if (savedCities.length === 10) {
+                historyEl.children(':last').remove();
+                savedCities.pop();
+            }
+            console.log(savedCities);
             newBtn.text(cityName);
             newBtn.addClass('history-btn');
             historyEl.prepend(newBtn);
 
-            if (savedCities.length === 10) {
-                savedCities.pop();
-            }
             savedCities.push(cityName);
-            console.log(savedCities);
             localStorage.setItem('savedCities', JSON.stringify(savedCities));
         }
     };

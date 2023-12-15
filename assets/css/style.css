@@ -32,9 +32,9 @@ body {
 }
 
 #today {
-    border: 1px solid black;
+    /* border: 1px solid black; */
     padding: 10px;
-    background-color: #3a7bc8;
+    /* background-color: #3a7bc8; */
     color: white;
 }
 
