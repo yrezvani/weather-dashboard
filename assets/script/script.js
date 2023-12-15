@@ -1,7 +1,3 @@
-// .history-btn inside #history,
-//current box: parent: #today, Elements:h2, p, p, p
-// forecast: parent: #forecast-container, then future-day div, Elements:p, div, p, p, p
-
 $(document).ready(function () {
     const searchForm = $('#search-form');
     const historyEl = $('#history');
@@ -71,19 +67,13 @@ $(document).ready(function () {
             .then(function (data) {
                 const city = data.city.name;
 
-                const weatherInfo = data.list;
-
                 // grabbing weather data for the same time for 5 days
                 const desiredTime = '12:00:00';
-                const fiveDayForecast = data.list
-                    .filter(function (weatherInfo) {
-                        // Extract the time from the timestamp
-                        const timestamp = weatherInfo.dt_txt.split(' ')[1]; // Get the time part
-                        return timestamp === desiredTime;
-                    })
-                    .catch(function (error) {
-                        alert('City not found or there was an API request error');
-                    });
+                const fiveDayForecast = data.list.filter(function (weatherInfo) {
+                    // Extract the time from the timestamp
+                    const timestamp = weatherInfo.dt_txt.split(' ')[1]; // Get the time part
+                    return timestamp === desiredTime;
+                });
 
                 //rendering to DOM
                 const forecastEl = $('.forecast-container');
@@ -112,6 +102,9 @@ $(document).ready(function () {
                     dayEl.append(dateEl, tempEl, windEl, humidityEl);
                     forecastEl.append(dayEl);
                 });
+            })
+            .catch(function (error) {
+                alert('City not found or there was an API request error');
             });
     };
 
