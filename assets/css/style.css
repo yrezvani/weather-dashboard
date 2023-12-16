@@ -10,10 +10,15 @@ body {
     height: 100%;
 }
 
+/* search button */
 .search-button {
     background-color: #0099ff;
     color: white;
     width: 100%;
+}
+
+.search-button:hover {
+    background-color: #0099ff;
 }
 
 .input-group {
@@ -21,6 +26,7 @@ body {
     gap: 1rem;
 }
 
+/* history section */
 #history {
     display: flex;
     flex-direction: column;
@@ -31,13 +37,13 @@ body {
     background-color: darkgray;
 }
 
+/* current weather sections */
 #today {
-    /* border: 1px solid black; */
     padding: 10px;
-    /* background-color: #3a7bc8; */
     color: white;
 }
 
+/* five-day forecast section */
 .forecast-container {
     display: flex;
     gap: 10px;
